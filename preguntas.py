@@ -22,7 +22,7 @@ def pregunta_01():
     data = pd.read_csv("data.csv")
 
     # Cree un objeto de tipo `PolynomialFeatures` con grado `2`
-    poly = PolynomialFeatures(2)
+    poly = PolynomialFeatures(degree=2, interaction_only=False, include_bias=True)
 
     # Transforme la columna `x` del dataset `data` usando el objeto `poly`
     x_poly = poly.fit_transform(data[["x"]])
@@ -49,10 +49,10 @@ def pregunta_02():
         y_pred = np.dot(x_poly, params)
 
         # Calcule el error
-        error = y - y_pred
+        error = [y_true - y_pred for y_true, y_pred in zip(y,y_pred)]
 
         # Calcule el gradiente
-        gradient = -2 * sum(error)
+        gradient = -np.sum(np.multiply(x_poly,np.array(error)[:,np.newaxis]),axis=0)
 
         # Actualice los parámetros
         params = params - learning_rate * gradient
